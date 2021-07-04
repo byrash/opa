@@ -1,0 +1,20 @@
+{
+    "authzs": [
+        {
+            "resource": "/abc/[0-9]/xyz",
+            "operations": ["GET", "PUT"],
+            "allowed_to": {
+                "user_groups": ["Red_Group", "Green_Group"],
+                "app_clients": ["ABC_Client", "BATCH_Client"]
+            }
+        },
+        {
+            "resource": "/pqr",
+            "operations": ["*"],
+            "allowed_to": {
+                "user_groups": ["Yellow_Group", "Magento_Group"],
+                "app_clients": ["*"]
+            }
+        }
+    ]
+}

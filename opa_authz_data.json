@@ -1,11 +1,11 @@
 {
     "authzs": [
         {
-            "resource": "/abc/[0-9]/xyz",
+            "resource": "/abc/[0-9]+/xyz",
             "operations": ["GET", "PUT"],
             "allowed_to": {
-                "user_groups": ["Red_Group", "Green_Group"],
-                "app_clients": ["ABC_Client", "BATCH_Client"]
+                "user_groups": ["POC-GRP-Shivaji", "Green_Group"],
+                "app_client_ids": ["11512cenrga5le8239ambvnva1", "BATCH_Client"]
             }
         },
         {
@@ -13,7 +13,7 @@
             "operations": ["*"],
             "allowed_to": {
                 "user_groups": ["Yellow_Group", "Magento_Group"],
-                "app_clients": ["*"]
+                "app_client_ids": ["*"]
             }
         }
     ]

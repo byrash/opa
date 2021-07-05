@@ -5,24 +5,22 @@ import data.authzs
 default allow = false
 
 allow {
-	valid_jwt
+	# valid_jwt
 	reqested_resource_allowed
 }
 
 reqested_resource_allowed {
-	[_, payload, _] := io.jwt.decode(input.token)
 	authz = authzs[_]
 	regex.match(authz.resource, input.resource)
 	operation_allowed(authz.operations, input.operation)
-	allowed_to_match(authz.allowed_to.user_groups, payload.userGroups)
+	allowed_to_match(authz.allowed_to.user_groups, token.payload["cognito:groups"])
 }
 
 reqested_resource_allowed {
-	[_, payload, _] := io.jwt.decode(input.token)
 	authz = authzs[_]
 	regex.match(authz.resource, input.resource)
 	operation_allowed(authz.operations, input.operation)
-	allowed_to_match(authz.allowed_to.app_clients, payload.appClient)
+	allowed_to_match(authz.allowed_to.app_client_ids, token.payload.client_id)
 }
 
 operation_allowed(allowed, value) {
@@ -33,12 +31,16 @@ operation_allowed(allowed, value) {
 	allowed[_] = value
 }
 
-allowed_to_match(allowed, value) {
-	allowed[_] = value
+allowed_to_match(allowed, values) {
+	allowed[_] = values[_]
+}
+
+allowed_to_match(allowed, values) {
+	allowed[_] = "*"
 }
 
 allowed_to_match(allowed, value) {
-	allowed[_] = "*"
+	allowed[_] = value
 }
 
 # https://play.openpolicyagent.org/p/9af2cRleIv
@@ -53,3 +55,7 @@ jwks_request(url) = http.send({
 	"force_cache": true,
 	"force_cache_duration_seconds": 3600, # Cache response for an hour
 })
+
+token = {"payload": payload} {
+	[header, payload, signature] := io.jwt.decode(input.token)
+}

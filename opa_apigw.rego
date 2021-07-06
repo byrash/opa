@@ -4,8 +4,10 @@ import data.authzs
 
 default allow = false
 
+runtime := opa.runtime()
+
 allow {
-	# valid_jwt
+	valid_jwt
 	reqested_resource_allowed
 }
 
@@ -45,7 +47,7 @@ allowed_to_match(allowed, value) {
 
 # https://play.openpolicyagent.org/p/9af2cRleIv
 valid_jwt {
-	jwks = jwks_request("https://authorization-server.example.com/jwks").body
+	jwks = jwks_request(runtime.env.JWKS_URL).body
 	io.jwt.verify_rs256(input.token, json.marshal(jwks))
 }
 

@@ -4,8 +4,9 @@
             "resource": "/abc/[0-9]+/xyz",
             "operations": ["GET", "PUT"],
             "allowed_to": {
-                "user_groups": ["POC-GRP-Shivaji", "Green_Group"],
-                "app_client_ids": ["11512cenrga5le8239ambvnva1", "BATCH_Client"]
+                "user_groups": ["POC-GRP", "Green_Group"],
+                "web_app_client_ids": ["11512cenrga5le8239ambvnva1"],
+                "system_client_ids": ["11512cenrga5le8239ambvnva1-Shivaji", "Green"]
             }
         },
         {
@@ -13,7 +14,8 @@
             "operations": ["*"],
             "allowed_to": {
                 "user_groups": ["Yellow_Group", "Magento_Group"],
-                "app_client_ids": ["*"]
+                "web_app_client_ids": ["*"],
+                "system_client_ids": ["*"]
             }
         }
     ]

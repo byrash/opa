@@ -7,7 +7,7 @@ default allow = false
 runtime := opa.runtime()
 
 allow {
-	valid_jwt
+	# valid_jwt
 	reqested_resource_allowed
 }
 
@@ -16,13 +16,14 @@ reqested_resource_allowed {
 	regex.match(authz.resource, input.resource)
 	operation_allowed(authz.operations, input.operation)
 	allowed_to_match(authz.allowed_to.user_groups, token.payload["cognito:groups"])
+	allowed_to_match(authz.allowed_to.web_app_client_ids, token.payload.client_id)
 }
 
 reqested_resource_allowed {
 	authz = authzs[_]
 	regex.match(authz.resource, input.resource)
 	operation_allowed(authz.operations, input.operation)
-	allowed_to_match(authz.allowed_to.app_client_ids, token.payload.client_id)
+	allowed_to_match(authz.allowed_to.system_client_ids, token.payload.client_id)
 }
 
 operation_allowed(allowed, value) {

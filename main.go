@@ -12,7 +12,7 @@ import (
 
 func main() {
 	r := rego.New(
-		rego.Query("allow_api_call = data.apigw.allow"),
+		rego.Query("allow_api_call = data.apigw.decision"),
 		rego.Load([]string{"opa_apigw.rego", "opa_authz_data.json"}, nil),
 		rego.Dump(os.Stdout))
 	ctx := context.Background()
@@ -35,6 +35,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Result: [%+v]", rs[0].Bindings["allow_api_call"])
-	// fmt.Println(rs)
+	b, err := json.Marshal(rs[0].Bindings["allow_api_call"])
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b))
 }

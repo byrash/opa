@@ -2,28 +2,29 @@ package apigw
 
 import data.authzs
 
-default allow = false
+decision["allow"] = count(reqested_resource_allowed) == 1
+
+decision["reason"] = concat(" | ", reqested_resource_allowed)
 
 runtime := opa.runtime()
 
-allow {
+reqested_resource_allowed[msg] {
 	# valid_jwt
-	reqested_resource_allowed
-}
-
-reqested_resource_allowed {
 	authz = authzs[_]
 	regex.match(authz.resource, input.resource)
 	operation_allowed(authz.operations, input.operation)
 	allowed_to_match(authz.allowed_to.user_groups, token.payload["cognito:groups"])
 	allowed_to_match(authz.allowed_to.web_app_client_ids, token.payload.client_id)
+	msg := "Allowing based on User Group and App Client ID allowed list along with resource path & http verb"
 }
 
-reqested_resource_allowed {
+reqested_resource_allowed[msg] {
+	# valid_jwt
 	authz = authzs[_]
 	regex.match(authz.resource, input.resource)
 	operation_allowed(authz.operations, input.operation)
 	allowed_to_match(authz.allowed_to.system_client_ids, token.payload.client_id)
+	msg := "Allowing based Batch Client ID allowed list along with resource path & http verb"
 }
 
 operation_allowed(allowed, value) {

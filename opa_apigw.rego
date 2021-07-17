@@ -2,11 +2,17 @@ package apigw
 
 import data.authzs
 
-decision["allow"] = count(reqested_resource_allowed) == 1
+decision["allow"] = allow
 
 decision["reason"] = concat(" | ", reqested_resource_allowed)
 
 runtime := opa.runtime()
+
+default allow = false
+
+allow {
+	count(reqested_resource_allowed) != 0
+}
 
 reqested_resource_allowed[msg] {
 	# valid_jwt
